@@ -34,7 +34,7 @@ JOIN
 
     // If a search term is provided, add a condition to filter the results
     if (searchTerm && searchTerm !== '') {
-        query += ` AND nama_produk LIKE '%${searchTerm}%'`; // Assuming you want to search in the `nama_produk` column
+        query += ` AND ( md.nama_produk LIKE '%${searchTerm}%' OR md.id_product LIKE '%${searchTerm}%' ) `; // Assuming you want to search in the `nama_produk` column
     }
 
 
