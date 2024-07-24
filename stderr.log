@@ -1,0 +1,70 @@
+node:internal/modules/cjs/loader:1051
+  throw err;
+  ^
+
+Error: Cannot find module 'http-errors'
+Require stack:
+- /home/u1797383/database.sijosgul.com/app.js
+- /usr/local/lsws/fcgi-bin/lsnode.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1048:15)
+    at Module._load (node:internal/modules/cjs/loader:901:27)
+    at Module.require (node:internal/modules/cjs/loader:1115:19)
+    at require (node:internal/modules/helpers:130:18)
+    at Object.<anonymous> (/home/u1797383/database.sijosgul.com/app.js:1:21)
+    at Module._compile (node:internal/modules/cjs/loader:1241:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1295:10)
+    at Module.load (node:internal/modules/cjs/loader:1091:32)
+    at Module._load (node:internal/modules/cjs/loader:938:12)
+    at Module.require (node:internal/modules/cjs/loader:1115:19) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/home/u1797383/database.sijosgul.com/app.js',
+    '/usr/local/lsws/fcgi-bin/lsnode.js'
+  ]
+}
+
+Node.js v20.9.0
+Exception ignored in: <_io.TextIOWrapper name='<stdout>' mode='w' encoding='utf-8'>
+BrokenPipeError: [Errno 32] Broken pipe
+node:internal/modules/cjs/loader:1051
+  throw err;
+  ^
+
+Error: Cannot find module 'http-errors'
+Require stack:
+- /home/u1797383/database.sijosgul.com/app.js
+- /usr/local/lsws/fcgi-bin/lsnode.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1048:15)
+    at Module._load (node:internal/modules/cjs/loader:901:27)
+    at Module.require (node:internal/modules/cjs/loader:1115:19)
+    at require (node:internal/modules/helpers:130:18)
+    at Object.<anonymous> (/home/u1797383/database.sijosgul.com/app.js:1:21)
+    at Module._compile (node:internal/modules/cjs/loader:1241:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1295:10)
+    at Module.load (node:internal/modules/cjs/loader:1091:32)
+    at Module._load (node:internal/modules/cjs/loader:938:12)
+    at Module.require (node:internal/modules/cjs/loader:1115:19) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/home/u1797383/database.sijosgul.com/app.js',
+    '/usr/local/lsws/fcgi-bin/lsnode.js'
+  ]
+}
+
+Node.js v20.9.0
+Unknown column 'master_data.id_status' in 'where clause'
+Unknown column 'master_data.id_status' in 'where clause'
+Unknown column 'master_data.id_status' in 'where clause'
+Unknown column 'master_data.id_status' in 'where clause'
+Unknown column 'master_data.id_status' in 'where clause'
+Unknown column 'master_data.id_status' in 'where clause'
+Unknown column 'master_data.id_status' in 'where clause'
+Unknown column 'master_data.id_status' in 'where clause'
+Unknown column 'master_data.id_status' in 'where clause'
+Unknown column 'master_data.id_status' in 'where clause'
+Unknown column 'master_data.id_status' in 'where clause'
+Unknown column 'master_data.id_status' in 'where clause'
+Unknown column 'master_data.id_status' in 'where clause'
+Unknown column 'master_data.id_status' in 'where clause'
+Unknown column 'master_data.id_status' in 'where clause'
+Unknown column 'master_data.id_status' in 'where clause'

@@ -37,9 +37,9 @@ router.get('/data', async function (req, res, next) {
 
     // Base query
     let query = `SELECT event_log.*, master_data.*, master_category.category_name 
-                FROM inventory.event_log 
-                LEFT JOIN inventory.master_data ON event_log.id_inventory = master_data.id_product
-                LEFT JOIN inventory.master_category ON master_data.category = master_category.category_id
+                FROM u1109947_Yorozuya.event_log 
+                LEFT JOIN u1109947_Yorozuya.master_data ON event_log.id_inventory = master_data.id_product
+                LEFT JOIN u1109947_Yorozuya.master_category ON master_data.category = master_category.category_id
                 WHERE 1=1`;
 
     // Handle id condition
@@ -71,9 +71,9 @@ router.get('/data', async function (req, res, next) {
 
     // Count query without limit and offset
     let countQuery = `SELECT COUNT(*) AS total_rows 
-                      FROM inventory.event_log 
-                      LEFT JOIN inventory.master_data ON event_log.id_inventory = master_data.id_product
-                      LEFT JOIN inventory.master_category ON master_data.category = master_category.category_id
+                      FROM u1109947_Yorozuya.event_log 
+                      LEFT JOIN u1109947_Yorozuya.master_data ON event_log.id_inventory = master_data.id_product
+                      LEFT JOIN u1109947_Yorozuya.master_category ON master_data.category = master_category.category_id
                       WHERE 1=1`;
 
     // Handle id condition for count query
@@ -165,7 +165,7 @@ router.get('/data', async function (req, res, next) {
 router.get('/date', async function (req, res, next) {
 
     let query = `SELECT DISTINCT  event_date
-    FROM inventory.event_log 
+    FROM u1109947_Yorozuya.event_log 
     WHERE 1
     `;
 

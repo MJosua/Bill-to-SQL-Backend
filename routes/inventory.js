@@ -26,11 +26,11 @@ router.get('/master_data', async function (req, res, next) {
     md.*,
     ml.lokasi_name
 FROM 
-    inventory.master_category mc
+    u1109947_Yorozuya.master_category mc
 JOIN 
-    inventory.master_data md ON mc.category_id = md.category 
+    u1109947_Yorozuya.master_data md ON mc.category_id = md.category 
 JOIN 
-    inventory.master_lokasi ml ON md.lokasi_id = ml.lokasi_id `;
+    u1109947_Yorozuya.master_lokasi ml ON md.lokasi_id = ml.lokasi_id `;
 
     // If a search term is provided, add a condition to filter the results
     if (searchTerm && searchTerm !== '') {
@@ -77,19 +77,19 @@ router.post('/master_data', async function (req, res, next) {
 
         // Insert data into master_data table
         const [masterDataResult] = await connection.query(
-            `INSERT INTO inventory.master_data (panjang, diameter, nama_produk, category, lokasi_id) VALUES (?, ?, ?, ?, ?)`,
+            `INSERT INTO u1109947_Yorozuya.master_data (panjang, diameter, nama_produk, category, lokasi_id) VALUES (?, ?, ?, ?, ?)`,
             [panjang, diameter, nama_produk, kategori, lokasi]
         );
 
         // Insert data into event_log table using the inserted ID from master_data
         const [eventLogResult] = await connection.query(
-            `INSERT INTO inventory.event_log (Filter, id_inventory, event_date, Deskripsi, id_status, nama_awal, panjang_awal) 
+            `INSERT INTO u1109947_Yorozuya.event_log (Filter, id_inventory, event_date, Deskripsi, id_status, nama_awal, panjang_awal) 
              VALUES (?, ?, NOW(), 'Pembuatan Master_data ${nama_produk}', 1, ?, ?)`,
             [`Master Data`, masterDataResult.insertId, nama_produk, panjang]
         );
 
         const [inventory] = await connection.query(
-            `INSERT INTO inventory.master_inventory 
+            `INSERT INTO u1109947_Yorozuya.master_inventory 
             (panjang_product, diameter_product, mnf_date, active, id_product) 
             VALUES (?, ?, NOW(), 1, ?)`,
             [panjang, diameter, masterDataResult.insertId]
@@ -170,7 +170,7 @@ router.patch('/master_data', async function (req, res, next) {
         values.push(id);
 
         const [updateResult] = await db.query(
-            `UPDATE inventory.master_data SET ${fields.join(", ")} WHERE id_product = ?`,
+            `UPDATE u1109947_Yorozuya.master_data SET ${fields.join(", ")} WHERE id_product = ?`,
             values
         );
 
@@ -180,7 +180,7 @@ router.patch('/master_data', async function (req, res, next) {
 
         // Insert event log if update is successful
         const [logResult] = await db.query(
-            `INSERT INTO inventory.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
+            `INSERT INTO u1109947_Yorozuya.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
              VALUES (?, ?, NOW(), ?, ?)`,
             ['Master Data', id, `Update Master_data ${nama_produk}`, 3]
         );
@@ -220,7 +220,7 @@ router.delete('/master_data', async function (req, res, next) {
 
         // Delete the record from master_data
         const [deleteResult] = await db.query(
-            `DELETE FROM inventory.master_data WHERE id_product = ?`,
+            `DELETE FROM u1109947_Yorozuya.master_data WHERE id_product = ?`,
             [id_master_data]
         );
 
@@ -234,7 +234,7 @@ router.delete('/master_data', async function (req, res, next) {
 
         // Insert the deletion event log
         const [logResult] = await db.query(
-            `INSERT INTO inventory.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
+            `INSERT INTO u1109947_Yorozuya.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
              VALUES (?, ?, NOW(), ?, ?)`,
             ['Master Data', id_master_data, `Deletion of Master_data with ID ${id_master_data}`, 2]
         );
@@ -261,9 +261,9 @@ router.get('/category', async function (req, res, next) {
     mc.category_desc,
     COUNT(md.category) AS quantity
 FROM 
-    inventory.master_category mc
+    u1109947_Yorozuya.master_category mc
 LEFT JOIN 
-    inventory.master_data md ON mc.category_id = md.category
+    u1109947_Yorozuya.master_data md ON mc.category_id = md.category
 GROUP BY 
     mc.category_id, mc.category_name, mc.category_desc`;
 
@@ -287,7 +287,7 @@ router.post('/category', async function (req, res, next) {
             return res.status(400).send('category_name, are required');
         }
         const [Postresult] = await db.query(
-            ` INSERT INTO inventory.master_category   
+            ` INSERT INTO u1109947_Yorozuya.master_category   
             ( category_name, category_desc) 
             VALUES (?, ?)`,
             [category_name, category_desc]
@@ -300,7 +300,7 @@ router.post('/category', async function (req, res, next) {
 
         // Insert the deletion event log
         const [logResult] = await db.query(
-            `INSERT INTO inventory.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
+            `INSERT INTO u1109947_Yorozuya.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
              VALUES (?, ?, NOW(), ?, ?)`,
             ['Category', Postresult.insertId, `Creation of Category with ID ${Postresult.insertId} and Name ${Postresult.category_name}`, 1]
         );
@@ -329,8 +329,8 @@ router.delete('/category', async function (req, res, next) {
 
         const deleteresult = await db.query(`
         DELETE master_category, master_data
-        FROM inventory.master_category AS master_category
-        LEFT JOIN inventory.master_data AS master_data ON master_category.category_id = master_data.category 
+        FROM u1109947_Yorozuya.master_category AS master_category
+        LEFT JOIN u1109947_Yorozuya.master_data AS master_data ON master_category.category_id = master_data.category 
         WHERE master_category.category_id = ${category_id}
         `);
 
@@ -342,7 +342,7 @@ router.delete('/category', async function (req, res, next) {
 
         // Insert the deletion event log
         const [logResult] = await db.query(
-            `INSERT INTO inventory.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
+            `INSERT INTO u1109947_Yorozuya.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
              VALUES (?, ?, NOW(), ?, ?)`,
             ['Category', category_id, `Deletion of Category with ID ${category_id} and Name ${category_name}`, 2]
         );
@@ -401,7 +401,7 @@ router.patch('/category', async function (req, res, next) {
         values.push(category_id);
 
         const [result] = await db.query(
-            `UPDATE inventory.master_category SET ${fields.join(", ")} WHERE category_id = ?`,
+            `UPDATE u1109947_Yorozuya.master_category SET ${fields.join(", ")} WHERE category_id = ?`,
             values
         );
 
@@ -412,7 +412,7 @@ router.patch('/category', async function (req, res, next) {
 
         // Insert the deletion event log
         const [logResult] = await db.query(
-            `INSERT INTO inventory.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
+            `INSERT INTO u1109947_Yorozuya.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
              VALUES (?, ?, NOW(), ?, ?)`,
             ['Category', category_id, `Update of Category with ID ${category_id} and Name ${category_name}`, 3]
         );
@@ -436,7 +436,7 @@ router.patch('/category', async function (req, res, next) {
 
 
 router.get('/lokasi_kategori', async function (req, res, next) {
-    let query = 'SELECT * FROM inventory.master_lokasi_kategori WHERE 1';
+    let query = 'SELECT * FROM u1109947_Yorozuya.master_lokasi_kategori WHERE 1';
 
     try {
         const [rows, fields] = await
@@ -461,7 +461,7 @@ router.post('/lokasi_kategori', async function (req, res, next) {
         }
 
         const [Postresult] = await db.query(
-            `INSERT INTO inventory.master_lokasi_kategori (category_name, category_desc) 
+            `INSERT INTO u1109947_Yorozuya.master_lokasi_kategori (category_name, category_desc) 
             VALUES (?, ?)`,
             [categoryLokasi_name, categoryLokasi_desc]
         );
@@ -473,7 +473,7 @@ router.post('/lokasi_kategori', async function (req, res, next) {
 
         // Insert the creation event log
         const [logResult] = await db.query(
-            `INSERT INTO inventory.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
+            `INSERT INTO u1109947_Yorozuya.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
              VALUES (?, ?, NOW(), ?, ?)`,
             ['Category Lokasi', Postresult.insertId, `Creation of Lokasi with ID ${Postresult.insertId} and Name ${categoryLokasi_name}`, 1]
         );
@@ -504,7 +504,7 @@ router.delete('/lokasi_kategori', async function (req, res, next) {
         }
 
         const deleteresult = await db.query(`
-        DELETE FROM inventory.master_lokasi_kategori 
+        DELETE FROM u1109947_Yorozuya.master_lokasi_kategori 
             WHERE category_id = ${category_id}
         `);
 
@@ -516,7 +516,7 @@ router.delete('/lokasi_kategori', async function (req, res, next) {
 
         // Insert the deletion event log
         const [logResult] = await db.query(
-            `INSERT INTO inventory.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
+            `INSERT INTO u1109947_Yorozuya.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
              VALUES (?, ?, NOW(), ?, ?)`,
             ['Category Lokasi', category_id, `Deletion of Category with ID ${category_id} and Name ${category_name}`, 2]
         );
@@ -574,7 +574,7 @@ router.patch('/lokasi_kategori', async function (req, res, next) {
         values.push(category_id);
 
         const [result] = await db.query(
-            `UPDATE inventory.master_lokasi_kategori SET ${fields.join(", ")} WHERE category_id = ?`,
+            `UPDATE u1109947_Yorozuya.master_lokasi_kategori SET ${fields.join(", ")} WHERE category_id = ?`,
             values
         );
 
@@ -584,7 +584,7 @@ router.patch('/lokasi_kategori', async function (req, res, next) {
 
         // Insert the update event log
         const [logResult] = await db.query(
-            `INSERT INTO inventory.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
+            `INSERT INTO u1109947_Yorozuya.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
              VALUES (?, ?, NOW(), ?, ?)`,
             ['Category Lokasi', category_id, `Update of Category with ID ${category_id} and Name ${category_name || 'N/A'}`, 3]
         );
@@ -618,7 +618,7 @@ router.get('/lokasi', async function (req, res, next) {
 
 
     let query = `SELECT master_lokasi_kategori.category_name , master_lokasi.*
-    FROM inventory.master_lokasi_kategori master_lokasi_kategori, inventory.master_lokasi master_lokasi
+    FROM u1109947_Yorozuya.master_lokasi_kategori master_lokasi_kategori, u1109947_Yorozuya.master_lokasi master_lokasi
     WHERE 
     master_lokasi_kategori.category_id  = master_lokasi.kategori_lokasi `;
 
@@ -667,13 +667,13 @@ router.post('/lokasi', async function (req, res, next) {
 
         // Insert data into master_data table
         const [masterDataResult] = await connection.query(
-            `INSERT INTO inventory.master_lokasi (lokasi_name, lokasi_desc, alamat_lokasi, kategori_lokasi) VALUES (?, ?, ?, ?)`,
+            `INSERT INTO u1109947_Yorozuya.master_lokasi (lokasi_name, lokasi_desc, alamat_lokasi, kategori_lokasi) VALUES (?, ?, ?, ?)`,
             [nama_lokasi, lokasi_desc, alamat_lokasi, kategori_lokasi]
         );
 
         // Insert data into event_log table using the inserted ID from master_data
         const [eventLogResult] = await connection.query(
-            `INSERT INTO inventory.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
+            `INSERT INTO u1109947_Yorozuya.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
              VALUES (?, ?, NOW(), ?, ?)`,
             ['Master Lokasi', masterDataResult.insertId, `Pembuatan Master_data ${nama_lokasi}`, 1]
         );
@@ -747,7 +747,7 @@ router.patch('/lokasi', async function (req, res, next) {
         values.push(id);
 
         const [updateResult] = await db.query(
-            `UPDATE inventory.master_lokasi SET ${fields.join(", ")} WHERE lokasi_id = ?`,
+            `UPDATE u1109947_Yorozuya.master_lokasi SET ${fields.join(", ")} WHERE lokasi_id = ?`,
             values
         );
 
@@ -757,7 +757,7 @@ router.patch('/lokasi', async function (req, res, next) {
 
         // Insert event log if update is successful
         const [logResult] = await db.query(
-            `INSERT INTO inventory.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
+            `INSERT INTO u1109947_Yorozuya.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
              VALUES (?, ?, NOW(), ?, ?)`,
             ['Data Lokasi', id, `Update Master_lokasi ${nama_lokasi}`, 3]
         );
@@ -790,7 +790,7 @@ router.delete('/lokasi', async function (req, res, next) {
 
         // Delete the record from master_data
         const [deleteResult] = await db.query(
-            `DELETE FROM inventory.master_lokasi WHERE lokasi_id = ?`,
+            `DELETE FROM u1109947_Yorozuya.master_lokasi WHERE lokasi_id = ?`,
             [id_master_data]
         );
 
@@ -802,7 +802,7 @@ router.delete('/lokasi', async function (req, res, next) {
 
         // Insert the deletion event log
         const [logResult] = await db.query(
-            `INSERT INTO inventory.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
+            `INSERT INTO u1109947_Yorozuya.event_log (Filter, id_inventory, event_date, Deskripsi, id_status) 
              VALUES (?, ?, NOW(), ?, ?)`,
             ['Master Lokasi', id_master_data, `Deletion of Master_data with ID ${id_master_data}`, 2]
         );
@@ -833,11 +833,11 @@ router.get('/data', async function (req, res, next) {
     md.*,
     ml.lokasi_name
     FROM 
-    inventory.master_category mc
+    u1109947_Yorozuya.master_category mc
     JOIN 
-    inventory.master_data md ON mc.category_id = md.category 
+    u1109947_Yorozuya.master_data md ON mc.category_id = md.category 
     JOIN 
-    inventory.master_lokasi ml ON md.lokasi_id = ml.lokasi_id
+    u1109947_Yorozuya.master_lokasi ml ON md.lokasi_id = ml.lokasi_id
     WHERE
     md.id_product = '${id}'
     ; `;
@@ -870,14 +870,14 @@ router.get('/inven', async function (req, res, next) {
     latest_date,
     total_count
 FROM 
-    inventory.master_inventory m
+    u1109947_Yorozuya.master_inventory m
 JOIN (
     SELECT 
         id_product,
         MAX(update_date) AS latest_date,
         COUNT(*) AS total_count
     FROM 
-        inventory.master_inventory 
+        u1109947_Yorozuya.master_inventory 
     WHERE
         id_product = '${id}'
     GROUP BY 
@@ -918,7 +918,7 @@ router.post('/inven', async function (req, res, next) {
 
 
         const [Postresult] = await db.query(
-            `INSERT INTO inventory.master_inventory 
+            `INSERT INTO u1109947_Yorozuya.master_inventory 
             (panjang_product, diameter_product, mnf_date, update_date, active, id_product) 
             VALUES (?, ?, ?, NOW(), ?, ?)`,
             [panjang_product, diameter_product, mnf_date, active, id_product]
@@ -935,7 +935,7 @@ router.post('/inven', async function (req, res, next) {
 
         // Insert the deletion event log
         const [logResult] = await db.query(
-            `INSERT INTO inventory.event_log (Filter, id_inventory, event_date, Deskripsi, id_status, panjang_sesudah ) 
+            `INSERT INTO u1109947_Yorozuya.event_log (Filter, id_inventory, event_date, Deskripsi, id_status, panjang_sesudah ) 
              VALUES (?, ?, NOW(), ?, ?,?)`,
             ['Inventory ', id_product, `Update of Inventory with ID ${id_product}, new panjang = ${panjang_product}`, 3, panjang_product]
         );
@@ -970,7 +970,7 @@ router.post('/inven/deactive', async function (req, res, next) {
 
 
         const [Postresult] = await db.query(
-            `INSERT INTO inventory.master_inventory 
+            `INSERT INTO u1109947_Yorozuya.master_inventory 
             (panjang_product, diameter_product, mnf_date, disposal_date, update_date, active, id_product) 
             VALUES (?, ?, ?, NOW(), NOW(), ?, ?)`,
             [panjang_product, diameter_product, mnf_date, active, id_product]
@@ -987,7 +987,7 @@ router.post('/inven/deactive', async function (req, res, next) {
 
         // Insert the deletion event log
         const [logResult] = await db.query(
-            `INSERT INTO inventory.event_log (Filter, id_inventory, event_date, Deskripsi, id_status, panjang_sesudah ) 
+            `INSERT INTO u1109947_Yorozuya.event_log (Filter, id_inventory, event_date, Deskripsi, id_status, panjang_sesudah ) 
              VALUES (?, ?, NOW(), ?, ?,?)`,
             ['Inventory ', id_product, `Dispose of Inventory with ID ${id_product}`, 2, panjang_product]
         );
